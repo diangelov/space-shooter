@@ -5,10 +5,16 @@ public class PlayerController : MonoBehaviour
 
     #region Properties
 
-    public float speed, tilt;
     public Boundary boundary;
 
+    public float speed, tilt, fireRateTime;
+
+    public GameObject shot;
+    public Transform shotSpawn;
+
     private Rigidbody rb;
+
+    private float nextFireTime = 0f;
 
     #endregion
 
@@ -18,6 +24,17 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+    }
+
+    // Update is called every frame, if the MonoBehaviour is enabled.
+    void Update()
+    {
+        if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
+        {
+            nextFireTime = Time.time + fireRateTime;
+
+            Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+        }
     }
 
     // FixedUpdate is called just before performing any physics calculations.
