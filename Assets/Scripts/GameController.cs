@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+
+using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
@@ -8,6 +10,14 @@ public class GameController : MonoBehaviour
     public GameObject hazard;
     public Vector3 spawnInitLocation;
 
+    public int hazardWaveCount = 10;
+    public int hazardsInOneSec = 2;
+
+    public float startWaitInSec = 1f;
+    public float waveWaitInSec = 0.8f;
+
+    private float spawnWait;
+
     #endregion
 
     #region Events
@@ -15,18 +25,35 @@ public class GameController : MonoBehaviour
     // Use this event for initialization.
     void Start()
     {
-        SpawnWaves();
+        // Calculate hazard's spawn wait
+        spawnWait = 1f / hazardsInOneSec;
+
+        StartCoroutine(SpawnWaves());
     }
 
-    void SpawnWaves()
+    IEnumerator SpawnWaves()
     {
-        Vector3 spawnPosition = new Vector3(Random.Range(-spawnInitLocation.x, spawnInitLocation.x),
-            spawnInitLocation.y, spawnInitLocation.z);
+        // Wait before the first wave
+        yield return new WaitForSeconds(startWaitInSec);
 
-        // No rotation
-        Quaternion spawnRotation = Quaternion.identity;
+        while (true)
+        {
+            for (int i = 0; i < hazardWaveCount; i++)
+            {
+                Vector3 spawnPosition = new Vector3(Random.Range(-spawnInitLocation.x, spawnInitLocation.x),
+                    spawnInitLocation.y, spawnInitLocation.z);
 
-        Instantiate(hazard, spawnPosition, spawnRotation);
+                // No rotation
+                Quaternion spawnRotation = Quaternion.identity;
+
+                Instantiate(hazard, spawnPosition, spawnRotation);
+
+                yield return new WaitForSeconds(spawnWait);
+            }
+
+            // Wait before the next wave
+            yield return new WaitForSeconds(waveWaitInSec);
+        }
     }
 
     #endregion
