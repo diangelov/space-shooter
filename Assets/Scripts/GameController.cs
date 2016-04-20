@@ -8,13 +8,18 @@ public class GameController : MonoBehaviour
     #region Properties
 
     public GameObject hazard;
-    public Vector3 spawnInitLocation;
 
-    public int hazardWaveCount = 10;
     public int hazardsInOneSec = 2;
+    public int hazardWaveCount = 10;
 
     public float startWaitInSec = 1f;
     public float waveWaitInSec = 0.8f;
+
+    public Vector3 spawnInitLocation;
+
+    public GUIText scoresText;
+
+    private int scores;
 
     private float spawnWait;
 
@@ -25,13 +30,31 @@ public class GameController : MonoBehaviour
     // Use this event for initialization.
     void Start()
     {
+        UpdateScores();
+
         // Calculate hazard's spawn wait
         spawnWait = 1f / hazardsInOneSec;
 
+        // Unleash the hazards
         StartCoroutine(SpawnWaves());
     }
 
-    IEnumerator SpawnWaves()
+    #endregion
+
+    #region Public Methods
+
+    public void AddScore(int scoresToAdd)
+    {
+        scores += scoresToAdd;
+
+        UpdateScores();
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private IEnumerator SpawnWaves()
     {
         // Wait before the first wave
         yield return new WaitForSeconds(startWaitInSec);
@@ -54,6 +77,11 @@ public class GameController : MonoBehaviour
             // Wait before the next wave
             yield return new WaitForSeconds(waveWaitInSec);
         }
+    }
+
+    private void UpdateScores()
+    {
+        scoresText.text = "Score: " + scores.ToString();
     }
 
     #endregion

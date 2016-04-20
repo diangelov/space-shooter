@@ -5,8 +5,12 @@ public class DestroyByContact : MonoBehaviour
 
     #region Properties
 
+    public int scoreValue;
+
     public GameObject explosion;
     public GameObject playerExplosion;
+
+    private GameController gameController;
 
     #endregion
 
@@ -21,15 +25,41 @@ public class DestroyByContact : MonoBehaviour
             return;
         }
 
-        Destroy(gameObject);
-        Destroy(other.gameObject);
-
-        // Run explosion VFXs
+        // Run game object explosion VFX
         Instantiate(explosion, transform.position, transform.rotation);
 
         if (other.tag.Equals("Player"))
         {
+            // Run player explosion VFX
             Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
+        }
+        else
+        {
+            InstantiateGameController();
+
+            gameController.AddScore(scoreValue);
+        }
+
+        Destroy(gameObject);
+        Destroy(other.gameObject);
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void InstantiateGameController()
+    {
+        GameObject go = GameObject.FindWithTag("GameController");
+
+        if (go != null)
+        {
+            gameController = go.GetComponent<GameController>();
+        }
+
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' script!");
         }
     }
 
