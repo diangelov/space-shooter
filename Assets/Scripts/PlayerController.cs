@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public Transform shotSpawn;
 
     private Rigidbody rb;
+    private AudioSource audioSource;
 
     private float nextFireTime = 0f;
 
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called every frame, if the MonoBehaviour is enabled.
@@ -34,6 +36,8 @@ public class PlayerController : MonoBehaviour
             nextFireTime = Time.time + fireRateTime;
 
             Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+
+            audioSource.Play();
         }
     }
 
